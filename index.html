@@ -1,0 +1,1442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuickSnacks | Healthy & Tasty</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-color: #ff9f43; /* Pastel Orange */
+            --secondary-color: #2ecc71; /* Fresh Green */
+            --bg-color: #fdfbf7; /* Cream */
+            --text-dark: #2d3436;
+            --text-light: #636e72;
+            --card-bg: #ffffff;
+            --loader-color: #ffca28; /* Vibrant Yellow */
+            --footer-bg: #2d3436;
+            --footer-text: #ffffff;
+            --cursor-color: #ffca28; /* Yellow for Cursor */
+        }
+
+        /* --- DARK MODE VARIABLES --- */
+        body.dark-mode {
+            --bg-color: #121212; /* Deep Black */
+            --text-dark: #f1f2f6; /* Off White */
+            --text-light: #a4b0be; /* Light Grey */
+            --card-bg: #1e1e1e; /* Dark Grey Cards */
+            --footer-bg: #000000;
+              --loader-color: orange;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            padding-top: 70px; /* Space for fixed navbar */
+            transition: background-color 0.3s ease, color 0.3s ease;
+            cursor: none; /* Hide default cursor */
+        }
+
+        h1, h2, h3, h4, h5 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+        }
+
+        /* --- DARK MODE OVERRIDES --- */
+        body.dark-mode .navbar {
+            background-color: #1e1e1e;
+            box-shadow: 0 2px 10px rgba(255,255,255,0.05);
+        }
+        body.dark-mode .nav-link {
+            color: #f1f2f6;
+        }
+        body.dark-mode .nav-link:hover, body.dark-mode .nav-link.active {
+            color: var(--primary-color);
+        }
+        body.dark-mode .feature-box {
+            background: #1e1e1e;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        body.dark-mode .feature-box h4 h3 p {
+            color: #fff;
+        }
+        body.dark-mode .feature-icon-circle {
+            background: #2d3436;
+            color: var(--primary-color);
+        }
+        body.dark-mode .card {
+            background-color: var(--card-bg);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+        }
+        body.dark-mode .card-body h5, body.dark-mode .card-body h3  {
+            color: #fff;
+        }
+        body.dark-mode .text-muted {
+            color: #a4b0be !important;
+        }
+        body.dark-mode .wave-container .shape-fill {
+            fill: var(--bg-color);
+        }
+        body.dark-mode .table {
+            color: var(--text-dark);
+        }
+        body.dark-mode .table thead {
+            background-color: #2d3436;
+            color: #fff;
+        }
+        body.dark-mode .table-hover tbody tr:hover {
+            color: #fff;
+            background-color: #2d3436;
+        }
+        body.dark-mode .bg-light {
+            background-color: #2d3436 !important;
+        }
+        body.dark-mode .list-group-item {
+            color: var(--text-dark);
+        }
+        /* Dark mode for new buy section */
+        body.dark-mode .buy-section {
+            background: #121212 !important;
+        }
+        body.dark-mode .buy-card {
+            background: #1e1e1e !important;
+            box-shadow: 0 8px 25px rgba(255,255,255,0.05) !important;
+        }
+        body.dark-mode .buy-card h3 {
+            color: #fff !important;
+        }
+        body.dark-mode .buy-card p {
+            color: #aaa !important;
+        }
+        
+        /* Dark mode toggle button */
+        .theme-switch {
+            cursor: pointer;
+            background: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        .theme-switch:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        /* --- PRELOADER CSS --- */
+        #loader-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-color);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
+        }
+
+        .loader-container {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            margin-bottom: 15px;
+        }
+
+        .loader-spinner {
+            width: 100%;
+            height: 100%;
+            border: 5px solid rgba(255, 202, 40, 0.2); 
+            border-top: 5px solid var(--loader-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .loader-img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50px; 
+            height: 50px;
+            object-fit: contain;
+            filter: invert(74%) sepia(45%) saturate(3364%) hue-rotate(325deg) brightness(101%) contrast(102%);
+        }
+
+        .loader-text {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            color: var(--loader-color);
+            letter-spacing: 2px;
+            animation: pulse 1.5s infinite ease-in-out;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .loaded #loader-wrapper {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        /* --- NAVIGATION & LOGO ANIMATION --- */
+        .navbar {
+            background-color: #ffffff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: background-color 0.3s ease;
+        }
+        .navbar-brand {
+            color: var(--primary-color) !important;
+            font-weight: 800;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            transition: transform 0.3s ease; /* Smooth hover for text */
+        }
+        
+        .navbar-brand:hover {
+            transform: scale(1.05); /* Slight zoom on hover for whole logo */
+        }
+        
+        /* NEW "TASTY BOUNCE" ANIMATION */
+        @keyframes tasty-bounce-glow {
+            0% { 
+                transform: scale(1) rotate(0deg); 
+                filter: drop-shadow(0 2px 2px rgba(255, 159, 67, 0.2));
+            }
+            25% { 
+                transform: scale(1.15) rotate(-10deg); 
+                filter: drop-shadow(0 5px 10px rgba(255, 159, 67, 0.6));
+            }
+            50% { 
+                transform: scale(1.15) rotate(10deg); 
+                filter: drop-shadow(0 5px 10px rgba(255, 159, 67, 0.6));
+            }
+            75% { 
+                transform: scale(1.15) rotate(-5deg); 
+                filter: drop-shadow(0 5px 10px rgba(255, 159, 67, 0.6));
+            }
+            100% { 
+                transform: scale(1) rotate(0deg); 
+                filter: drop-shadow(0 2px 2px rgba(255, 159, 67, 0.2));
+            }
+        }
+
+        .navbar-brand i {
+            display: inline-block;
+            /* Animation runs every 2 seconds */
+            animation: tasty-bounce-glow 2s ease-in-out infinite;
+            color: var(--primary-color);
+            margin-right: 10px;
+        }
+        /* --------------------------- */
+
+        .nav-link {
+            color: var(--text-dark);
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: var(--primary-color);
+        }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1490474418585-ba9bad8fd0ea?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
+            background-size: cover;
+            background-position: center;
+            height: 85vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            position: relative;
+            margin-bottom: 0;
+        }
+        .hero h1 { 
+            font-size: 4rem; 
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.5); 
+            margin-bottom: 1rem;
+        }
+        
+        /* --- WAVE DIVIDER --- */
+        .wave-container {
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            overflow: hidden;
+            line-height: 0;
+            transform: rotate(180deg);
+        }
+        .wave-container svg {
+            position: relative;
+            display: block;
+            width: calc(157% + 1.3px);
+            height: 80px;
+        }
+        .wave-container .shape-fill {
+            fill: var(--bg-color);
+            transition: fill 0.3s ease;
+        }
+
+        .btn-custom {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 50px;
+            border: none;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(255, 159, 67, 0.4);
+        }
+        .btn-custom:hover {
+            transform: translateY(-5px);
+            background-color: #ff8c20;
+            color: white;
+            box-shadow: 0 10px 20px rgba(255, 159, 67, 0.6);
+        }
+
+        /* --- FEATURE BOXES --- */
+        .feature-box {
+            text-align: center;
+            padding: 2rem;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            transition: background 0.3s, transform 0.3s;
+            height: 100%;
+        }
+        .feature-box:hover {
+            transform: translateY(-10px);
+        }
+        .feature-icon-circle {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #fff3e0, #fff);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            color: var(--primary-color);
+            font-size: 2rem;
+            transition: background 0.3s;
+        }
+
+        /* --- CARDS --- */
+        .card {
+            border: none;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            transition: background 0.3s, transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            background: var(--card-bg);
+            height: 100%;
+        }
+        .card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        .card-img-top {
+            height: 220px;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+        .card:hover .card-img-top {
+            transform: scale(1.1);
+        }
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: var(--text-dark);
+            position: relative;
+            font-size: 2.5rem;
+        }
+        .section-title span {
+            color: var(--primary-color);
+        }
+        
+        /* --- NEWSLETTER --- */
+        .newsletter-section {
+            background: linear-gradient(135deg, var(--primary-color), #ffcb80);
+            border-radius: 30px;
+            padding: 4rem 2rem;
+            position: relative;
+            overflow: hidden;
+            color: white;
+            box-shadow: 0 20px 50px rgba(255, 159, 67, 0.3);
+        }
+        .newsletter-section::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 200px;
+            height: 200px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+        }
+        .newsletter-section::after {
+            content: '';
+            position: absolute;
+            bottom: -30px;
+            left: 40px;
+            width: 100px;
+            height: 100px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+        .newsletter-input {
+            border-radius: 50px;
+            padding: 15px 25px;
+            border: none;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        /* --- GALLERY --- */
+        .gallery-item {
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .gallery-item img {
+            width: 100%;
+            border-radius: 15px;
+            transition: transform 0.5s;
+        }
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+
+        /* --- MAP FRAME (Old Contact Map) --- */
+        #map-frame {
+            width: 100%;
+            height: 300px;
+            border: 0;
+            border-radius: 15px;
+            background-color: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* --- NEW PREMIUM BUY SECTION STYLES --- */
+        .buy-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 18px 50px rgba(0,0,0,0.18);
+        }
+        .buy-card:hover img {
+            transform: scale(1.05);
+        }
+        .buy-card button:hover {
+            transform: scale(1.05);
+        }
+        @media (max-width: 768px) {
+            .card-grid {
+            grid-template-columns: 1fr;
+            }
+        }
+
+        /* --- FOOTER --- */
+        .footer-custom {
+            background-color: var(--footer-bg);
+            color: var(--footer-text);
+            position: relative;
+            margin-top: 5rem;
+            padding-top: 3rem;
+            transition: background 0.3s;
+        }
+        .footer-wave {
+            position: absolute;
+            top: -50px;
+            left: 0;
+            width: 100%;
+            overflow: hidden;
+            line-height: 0;
+        }
+        .footer-wave svg {
+            display: block;
+            width: calc(157% + 1.3px);
+            height: 50px;
+        }
+        .footer-wave .shape-fill {
+            fill: var(--footer-bg);
+            transition: fill 0.3s;
+        }
+        .footer-brand {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            display: inline-block;
+        }
+        .footer-link {
+            color: #b2bec3;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.5rem;
+            transition: color 0.3s;
+        }
+        .footer-link:hover {
+            color: var(--primary-color);
+            padding-left: 5px;
+        }
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.1);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            color: white;
+            margin-right: 10px;
+            transition: background 0.3s;
+            text-decoration: none;
+        }
+        .social-icon:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        /* --- UTILITIES --- */
+        .page-section {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+        .page-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Back to Top */
+        #btn-back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: none;
+            z-index: 100;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
+        }
+
+        /* --- CUSTOM CURSOR CSS --- */
+        .cursor-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--cursor-color);
+            border-radius: 50%;
+            position: fixed;
+            z-index: 9999;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            transition: background-color 0.3s ease;
+        }
+
+        .cursor-outline {
+            width: 30px;
+            height: 30px;
+            border: 2px solid var(--cursor-color);
+            border-radius: 50%;
+            position: fixed;
+            z-index: 9999;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            transition: 
+                transform 0.15s ease-out, 
+                border-color 0.3s ease;
+        }
+        
+        .hovered {
+            transform: translate(-50%, -50%) scale(1.5);
+            border-color: var(--primary-color) !important;
+        }
+        
+        @media (max-width: 767.98px) {
+            body { cursor: default; }
+            .cursor-dot, .cursor-outline { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
+    <div id="loader-wrapper">
+        <div class="loader-container">
+            <div class="loader-spinner"></div>
+            <img src="https://cdn-icons-png.flaticon.com/512/1046/1046857.png" alt="Loading..." class="loader-img">
+        </div>
+        <div class="loader-text">COOKING...</div>
+    </div>
+
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#" onclick="navTo('home')">
+                <i class="fas fa-utensils me-2"></i> QuickSnacks
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link active" href="#" onclick="navTo('home')"><i class="fas fa-home me-1"></i> Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="navTo('categories')"><i class="fas fa-th-large me-1"></i> Categories</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="navTo('gallery')"><i class="fas fa-images me-1"></i> Gallery</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="navTo('buy')"><i class="fas fa-shopping-cart me-1"></i> Where to Buy</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="navTo('reviews')"><i class="fas fa-star me-1"></i> Reviews</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="navTo('contact')"><i class="fas fa-envelope me-1"></i> Contact</a></li>
+                    <li class="nav-item ms-lg-3 mt-2 mt-lg-0">
+                        <button class="theme-switch" onclick="toggleTheme()" id="themeToggleBtn" title="Toggle Light/Dark Mode">
+                            <i class="fas fa-moon"></i>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div id="home" class="page-section active">
+        <div class="hero">
+            <div class="container" style="position: relative; z-index: 2;">
+                <h1 class="display-3 fw-bold">Delicious Snacks<br>in Minutes</h1>
+                <p class="lead mb-4 fs-4">Quick, healthy, and tasty recipes for everyone.</p>
+                <button class="btn btn-custom btn-lg" onclick="navTo('categories')">Explore Recipes</button>
+            </div>
+            <div class="wave-container">
+                <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                    <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" class="shape-fill"></path>
+                </svg>
+            </div>
+        </div>
+
+        <div class="container" style="margin-top: -50px; position: relative; z-index: 5;">
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="feature-box">
+                        <div class="feature-icon-circle">
+                            <i class="fas fa-carrot"></i>
+                        </div>
+                        <h4>Fresh Ingredients</h4>
+                        <p class="text-muted">We prioritize organic and locally sourced ingredients for every recipe.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-box">
+                        <div class="feature-icon-circle">
+                            <i class="fas fa-stopwatch"></i>
+                        </div>
+                        <h4>15-Min Recipes</h4>
+                        <p class="text-muted">No time? No problem. Most of our snacks are ready in under 15 minutes.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-box">
+                        <div class="feature-icon-circle">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <h4>Chef Approved</h4>
+                        <p class="text-muted">Healthy doesn't mean boring. All recipes are tested for maximum flavor.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container py-5 mt-4">
+            <h2 class="section-title">Featured <span>Snacks</span></h2>
+            <div class="row g-4" id="featured-container">
+                </div>
+        </div>
+
+        <div class="container mb-5">
+            <div class="newsletter-section text-center">
+                <h2 class="fw-bold mb-3">Join Our Tasty Community!</h2>
+                <p class="mb-4 text-white-50">Get the latest recipes and nutrition tips delivered straight to your inbox.</p>
+                <div class="row justify-content-center">
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <input type="email" class="form-control newsletter-input" placeholder="Enter your email address">
+                            <button class="btn btn-dark rounded-pill ms-2 px-4 fw-bold" type="button">Subscribe</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="categories" class="page-section container py-5">
+        <h2 class="section-title">Browse <span>Categories</span></h2>
+        <div class="row g-4 text-center">
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 p-4" onclick="loadCategory('healthy')">
+                    <div class="card-body">
+                        <i class="fas fa-leaf fa-3x mb-3 text-success"></i>
+                        <h4 class="text-muted">Healthy Snacks</h4>
+                        <p class="text-muted">Guilt-free munching.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 p-4" onclick="loadCategory('kids')">
+                    <div class="card-body">
+                        <i class="fas fa-child fa-3x mb-3 text-warning"></i>
+                        <h4 class="text-muted">Snacks for Kids</h4>
+                        <p class="text-muted">Fun and nutritious.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 p-4" onclick="loadCategory('easy')">
+                    <div class="card-body">
+                        <i class="fas fa-feather fa-3x mb-3 text-info"></i>
+                        <h4 class="text-muted">Easy-on-Stomach</h4>
+                        <p class="text-muted">Light and digestible.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 p-4" onclick="loadCategory('smoothies')">
+                    <div class="card-body">
+                        <i class="fas fa-blender fa-3x mb-3 text-danger"></i>
+                        <h4 class="text-muted">Smoothies</h4>
+                        <p class="text-muted">Blend and go!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="category-list" class="page-section container py-5">
+        <button class="btn btn-outline-secondary mb-4" onclick="navTo('categories')"><i class="fas fa-arrow-left"></i> Back to Categories</button>
+        <h2 class="section-title" id="cat-title">Category Name</h2>
+        <div class="row g-4" id="cat-items-container">
+            </div>
+    </div>
+
+    <div id="recipe-detail" class="page-section container py-5">
+        <button class="btn btn-outline-secondary mb-4" onclick="goBackToCategory()"><i class="fas fa-arrow-left"></i> Back to List</button>
+        
+        <div class="row">
+            <div class="col-lg-6 mb-4">
+                <div class="recipe-header">
+                    <img id="detail-img" src="" alt="Recipe Image" class="shadow-sm mb-3">
+                    <h2 id="detail-title" class="mb-2">Recipe Title</h2>
+                    <p class="text-muted" id="detail-desc">Short description goes here.</p>
+                    
+                    <div class="d-flex flex-wrap gap-2 mb-3">
+                        <span class="badge bg-primary" id="detail-prep"><i class="far fa-clock"></i> 10 mins</span>
+                        <span class="badge bg-success" id="detail-serves"><i class="fas fa-user-friends"></i> Serves 2</span>
+                        <span class="badge bg-warning text-dark" id="detail-cals"><i class="fas fa-fire"></i> 150 kcal</span>
+                    </div>
+
+                    <div class="card bg-light border-0">
+                        <div class="card-body">
+                            <h5><i class="fas fa-shopping-basket me-2"></i>Ingredients</h5>
+                            <ul id="detail-ingredients" class="list-group list-group-flush bg-transparent">
+                                </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <h4 class="mb-4 text-primary">Instructions</h4>
+                        <div id="detail-steps">
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="gallery" class="page-section container py-5">
+        <h2 class="section-title">Snack Gallery</h2>
+        <div class="row g-3">
+            <div class="col-md-4 gallery-item">
+                <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Salad">
+            </div>
+            <div class="col-md-4 gallery-item">
+                <img src="https://images.unsplash.com/photo-1505253758473-96b701d8fe6e?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Sandwich">
+            </div>
+            <div class="col-md-4 gallery-item">
+                <img src="https://images.unsplash.com/photo-1565958011703-44f9829ba187?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Cake">
+            </div>
+            <div class="col-md-6 gallery-item">
+                <img src="https://images.unsplash.com/photo-1494390248081-4e521a5940db?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Smoothie">
+            </div>
+            <div class="col-md-6 gallery-item">
+                <img src="https://images.unsplash.com/photo-1482049016688-2d3e1b311543?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Toast">
+            </div>
+        </div>
+    </div>
+
+    <section id="buy" class="page-section buy-section" style="padding: 60px 20px; background: var(--bg-color); font-family: 'Inter', sans-serif;">
+      <div class="container" style="max-width: 1200px; margin: auto;">
+        <h2 class="section-title">Where to <span>Buy</span></h2>
+        
+        <div class="card-grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px;">
+          <div class="buy-card" style="background:var(--card-bg); border-radius:20px; box-shadow:0 8px 25px rgba(0,0,0,0.08); padding:30px; text-align:center; transition: transform 0.3s ease, box-shadow 0.3s ease; cursor:pointer;">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon" style="max-width:140px; margin-bottom:20px; transition: transform 0.3s ease;">
+            <h3 style="font-size:1.3rem; margin-bottom:12px; color:var(--text-dark);">Amazon</h3>
+            <p style="font-size:0.95rem; color:var(--text-light); margin-bottom:20px;">Find Amazon stores near you.</p>
+            <button onclick="findStores('Amazon')" style="display:inline-block; padding:12px 25px; background:#ff9900; color:#fff; border-radius:10px; border:none; cursor:pointer; font-weight:500; transition: transform 0.2s ease;">Find Nearby</button>
+          </div>
+    
+          <div class="buy-card" style="background:var(--card-bg); border-radius:20px; box-shadow:0 8px 25px rgba(0,0,0,0.08); padding:30px; text-align:center; transition: transform 0.3s ease, box-shadow 0.3s ease; cursor:pointer;">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/7/70/Daraz_logo.svg" alt="Daraz" style="max-width:140px; margin-bottom:20px; transition: transform 0.3s ease;">
+            <h3 style="font-size:1.3rem; margin-bottom:12px; color:var(--text-dark);">Daraz</h3>
+            <p style="font-size:0.95rem; color:var(--text-light); margin-bottom:20px;">Find Daraz stores near you.</p>
+            <button onclick="findStores('Daraz')" style="display:inline-block; padding:12px 25px; background:#e41b23; color:#fff; border-radius:10px; border:none; cursor:pointer; font-weight:500; transition: transform 0.2s ease;">Find Nearby</button>
+          </div>
+    
+          <div class="buy-card" style="background:var(--card-bg); border-radius:20px; box-shadow:0 8px 25px rgba(0,0,0,0.08); padding:30px; text-align:center; transition: transform 0.3s ease, box-shadow 0.3s ease; cursor:pointer;">
+            <img src="https://via.placeholder.com/140x60?text=Local+Store" alt="Local Store" style="margin-bottom:20px; transition: transform 0.3s ease;">
+            <h3 style="font-size:1.3rem; margin-bottom:12px; color:var(--text-dark);">Local Stores</h3>
+            <p style="font-size:0.95rem; color:var(--text-light); margin-bottom:20px;">Find local stores near you.</p>
+            <button onclick="findStores('Retail Store')" style="display:inline-block; padding:12px 25px; background:#333; color:#fff; border-radius:10px; border:none; cursor:pointer; font-weight:500; transition: transform 0.2s ease;">Find Nearby</button>
+          </div>
+        </div>
+    
+        <div id="map" style="margin-top:60px; height:450px; border-radius:20px; overflow:hidden; box-shadow:0 8px 25px rgba(0,0,0,0.08);"></div>
+      </div>
+    </section>
+
+    <div id="reviews" class="page-section container py-5">
+        <h2 class="section-title">Customer Reviews</h2>
+        
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card p-4 bg-light border-0">
+                    <h5>Leave a Review</h5>
+                    <form id="reviewForm" onsubmit="submitReview(event)">
+                        <div class="mb-3">
+                            <label class="form-label">Name</label>
+                            <input type="text" id="reviewerName" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Rating</label>
+                            <select id="reviewerRating" class="form-select">
+                                <option value="5">⭐⭐⭐⭐⭐ (5)</option>
+                                <option value="4">⭐⭐⭐⭐ (4)</option>
+                                <option value="3">⭐⭐⭐ (3)</option>
+                                <option value="2">⭐⭐ (2)</option>
+                                <option value="1">⭐ (1)</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Comment</label>
+                            <textarea id="reviewerComment" class="form-control" rows="3" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-custom w-100">Submit Review</button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="col-md-8">
+                <div id="reviews-container">
+                    </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="contact" class="page-section container py-5">
+        <h2 class="section-title">Contact Us</h2>
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <h3>Visit QuickSnacks HQ</h3>
+                <p>123 Healthy Avenue, Foodie City, FC 90210</p>
+                <p><strong>Phone:</strong> (555) 123-4567</p>
+                <p><strong>Email:</strong> hello@quicksnacks.com</p>
+                <p><strong>Open Hours:</strong> Mon-Fri: 9am - 6pm</p>
+                <hr>
+                <div class="alert alert-info">
+                    <i class="fas fa-map-marker-alt"></i> Click the button below to see your location and find the route to us!
+                </div>
+                <button class="btn btn-primary" onclick="getLocation()"><i class="fas fa-location-arrow"></i> Locate Me</button>
+                <p id="geo-status" class="mt-2 text-muted"></p>
+            </div>
+            <div class="col-md-6">
+                <div id="map-frame">
+                    <div class="text-center p-4">
+                        <i class="fas fa-map-marked-alt fa-3x text-secondary mb-3"></i>
+                        <h5>Interactive Map</h5>
+                        <p>Use the "Locate Me" button to find coordinates.</p>
+                        <div id="map-output"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer-custom">
+        <div class="footer-wave">
+            <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                <path d="M985.66,92.83C906.67,72,823.78,31,743.84,14.19c-82.26-17.34-168.06-16.33-250.45.39-57.84,11.73-114,31.07-172,41.86A600.21,600.21,0,0,1,0,27.35V120H1200V95.8C1132.19,118.92,1055.71,111.31,985.66,92.83Z" class="shape-fill"></path>
+            </svg>
+        </div>
+        <div class="container pt-5 pb-4">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <a href="#" class="footer-brand"><i class="fas fa-utensils me-2"></i>QuickSnacks</a>
+                    <p class="text-white-50 pe-lg-4">
+                        Your daily dose of healthy, quick, and delicious recipes. We believe that good food shouldn't take all day to prepare.
+                    </p>
+                    <div class="mt-3">
+                        <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-pinterest"></i></a>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-2 mb-4">
+                    <h5 class="mb-3 text-uppercase fw-bold text-primary">Explore</h5>
+                    <a href="#" onclick="navTo('home')" class="footer-link">Home</a>
+                    <a href="#" onclick="navTo('categories')" class="footer-link">Categories</a>
+                    <a href="#" onclick="navTo('gallery')" class="footer-link">Gallery</a>
+                    <a href="#" onclick="navTo('reviews')" class="footer-link">Reviews</a>
+                </div>
+
+                <div class="col-md-6 col-lg-2 mb-4">
+                    <h5 class="mb-3 text-uppercase fw-bold text-primary">Support</h5>
+                    <a href="#" class="footer-link">FAQ</a>
+                    <a href="#" class="footer-link">Privacy Policy</a>
+                    <a href="#" class="footer-link">Terms of Use</a>
+                    <a href="#" onclick="navTo('contact')" class="footer-link">Help Center</a>
+                </div>
+
+                <div class="col-lg-4 mb-4">
+                    <h5 class="mb-3 text-uppercase fw-bold text-primary">Contact Us</h5>
+                    <p class="mb-2"><i class="fas fa-map-marker-alt me-2 text-primary"></i> 123 Healthy Avenue, Foodie City</p>
+                    <p class="mb-2"><i class="fas fa-phone me-2 text-primary"></i> (555) 123-4567</p>
+                    <p class="mb-2"><i class="fas fa-envelope me-2 text-primary"></i> hello@quicksnacks.com</p>
+                    <p class="small text-white-50 mt-3">Subscribed to our newsletter yet? Check the home page!</p>
+                </div>
+            </div>
+            
+            <hr class="my-4" style="background-color: rgba(255,255,255,0.2);">
+            
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="mb-0 small text-white-50">© 2023 QuickSnacks Inc. All Rights Reserved.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <small class="text-white-50">Designed with <i class="fas fa-heart text-danger"></i> for Healthy Living.</small>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <button type="button" class="btn btn-floating btn-lg" id="btn-back-to-top" onclick="window.scrollTo(0,0)">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="https://www.google.com/maps/dir/?api=1&origin=Space+Needle+Seattle+WA&destination=Pike+Place+Market+Seattle+WA&travelmode=bicycling"></script>
+
+    <script>
+        // --- DATA STORE ---
+        const recipes = {
+            "healthy": [
+                {
+                    id: 1,
+                    name: "Avocado Toast",
+                    desc: "Creamy avocado on toasted whole wheat bread topped with seasoning.",
+                    img: "https://images.unsplash.com/photo-1588137372308-15f75323ca8d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+                    prep: "5 mins",
+                    serves: "1 person",
+                    cals: "220 kcal",
+                    ingredients: ["1 slice whole wheat bread", "1/2 ripe avocado", "Salt & Pepper", "Chili flakes", "Lemon juice"],
+                    steps: ["Toast the bread until golden brown.", "Mash avocado with lemon juice, salt, and pepper in a bowl.", "Spread the avocado mixture generously on the toast.", "Sprinkle chili flakes and serve immediately."]
+                },
+                {
+                    id: 2,
+                    name: "Sprout Salad",
+                    desc: "A crunchy, protein-packed salad with fresh vegetables.",
+                    img: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+                    prep: "10 mins",
+                    serves: "2 people",
+                    cals: "180 kcal",
+                    ingredients: ["1 cup mixed sprouts (steamed)", "1 cucumber (chopped)", "1 tomato (chopped)", "1 tbsp lemon juice", "Chaat masala"],
+                    steps: ["Lightly boil or steam sprouts if preferred over raw.", "Chop cucumber, tomato, and onion.", "Mix everything in a large bowl.", "Add lemon juice and chaat masala. Toss well."]
+                }
+            ],
+            "kids": [
+                {
+                    id: 3,
+                    name: "Fruit & Nut Energy Balls",
+                    desc: "Sweet, no-bake energy bites perfect for lunchboxes.",
+                    img: "https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+                    prep: "15 mins",
+                    serves: "10 balls",
+                    cals: "90 kcal each",
+                    ingredients: ["1 cup rolled oats", "1/2 cup peanut butter", "1/3 cup honey", "1/2 cup chocolate chips", "1 tsp vanilla extract"],
+                    steps: ["Mix all ingredients in a large bowl.", "Chill in refrigerator for 30 mins (covered).", "Roll into small balls.", "Store in airtight container for up to a week."]
+                },
+                {
+                    id: 4,
+                    name: "Mini Pizza Bagels",
+                    desc: "Quick pizza bites that kids love.",
+                    img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+                    prep: "10 mins",
+                    serves: "2 people",
+                    cals: "300 kcal",
+                    ingredients: ["2 bagels (halved)", "1/2 cup marinara sauce", "1 cup mozzarella cheese", "Pepperoni slices"],
+                    steps: ["Preheat oven or toaster oven to 375°F (190°C).", "Spread sauce on bagel halves.", "Top with cheese and pepperoni.", "Bake for 10 mins until cheese is bubbly."]
+                }
+            ],
+            "easy": [
+                {
+                    id: 5,
+                    name: "Greek Yogurt Mix",
+                    desc: "Probiotic-rich snack easy on the digestion.",
+                    img: "https://images.unsplash.com/photo-1488477181946-6428a0291777?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+                    prep: "3 mins",
+                    serves: "1 person",
+                    cals: "150 kcal",
+                    ingredients: ["1 cup Greek yogurt", "1 tbsp honey", "Handful of berries", "Granola (optional)"],
+                    steps: ["Scoop yogurt into a bowl.", "Drizzle honey over it.", "Add fresh berries.", "Enjoy immediately."]
+                }
+            ],
+            "smoothies": [
+                {
+                    id: 6,
+                    name: "Green Power Smoothie",
+                    desc: "Packed with spinach, banana, and apple.",
+                    img: "https://images.unsplash.com/photo-1610970881699-44a5587cabec?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+                    prep: "5 mins",
+                    serves: "1 glass",
+                    cals: "180 kcal",
+                    ingredients: ["1 cup spinach", "1 banana (frozen)", "1/2 apple", "1 cup almond milk"],
+                    steps: ["Wash spinach and chop apple.", "Add all ingredients to a blender.", "Blend on high until smooth.", "Pour into a glass and serve."]
+                }
+            ]
+        };
+
+        let currentCategory = '';
+
+        // --- NAVIGATION ---
+        function navTo(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(nav => nav.classList.remove('active'));
+            
+            // Show target
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+
+            // Close navbar on mobile
+            const navbarToggler = document.querySelector('.navbar-toggler');
+            const navbarCollapse = document.querySelector('.navbar-collapse');
+            if(window.getComputedStyle(navbarToggler).display !== 'none' && navbarCollapse.classList.contains('show')) {
+                navbarToggler.click();
+            }
+        }
+
+        // --- THEME TOGGLE LOGIC ---
+        function toggleTheme() {
+            const body = document.body;
+            const btn = document.getElementById('themeToggleBtn');
+            const icon = btn.querySelector('i');
+            
+            body.classList.toggle('dark-mode');
+            
+            if(body.classList.contains('dark-mode')) {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+                localStorage.setItem('qs-theme', 'dark');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+                localStorage.setItem('qs-theme', 'light');
+            }
+        }
+
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('qs-theme');
+            const btn = document.getElementById('themeToggleBtn');
+            const icon = btn.querySelector('i');
+
+            if(savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            }
+        }
+
+        // --- CUSTOM CURSOR LOGIC ---
+        const cursorDot = document.querySelector('.cursor-dot');
+        const cursorOutline = document.querySelector('.cursor-outline');
+        
+        let mouseX = 0;
+        let mouseY = 0;
+        let outlineX = 0;
+        let outlineY = 0;
+        const speed = 0.2; 
+        
+        if (window.innerWidth >= 768) {
+             document.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+                
+                cursorDot.style.left = mouseX + 'px';
+                cursorDot.style.top = mouseY + 'px';
+            });
+            
+            function animateCursor() {
+                outlineX += (mouseX - outlineX) * speed;
+                outlineY += (mouseY - outlineY) * speed;
+                
+                cursorOutline.style.left = outlineX + 'px';
+                cursorOutline.style.top = outlineY + 'px';
+
+                requestAnimationFrame(animateCursor);
+            }
+            
+            animateCursor();
+
+            const interactiveElements = 'a, button, .card, .form-control, .theme-switch';
+            document.querySelectorAll(interactiveElements).forEach(el => {
+                el.addEventListener('mouseenter', () => cursorOutline.classList.add('hovered'));
+                el.addEventListener('mouseleave', () => cursorOutline.classList.remove('hovered'));
+            });
+        }
+
+        // --- GOOGLE MAPS & STORE LOCATOR LOGIC ---
+        let map;
+        let markers = [];
+        let infoWindow;
+
+        function initMap() {
+            // Check if API is loaded first to prevent errors if key is missing
+            if (typeof google === 'undefined') {
+                console.warn('Google Maps API not loaded. Check your API Key.');
+                document.getElementById('map').innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#888;">Map unavailable (Missing API Key)</div>';
+                return;
+            }
+
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: { lat: 24.8607, lng: 67.0011 },
+                zoom: 13
+            });
+            infoWindow = new google.maps.InfoWindow();
+        }
+
+        function clearMarkers() {
+            for (let marker of markers) {
+                marker.setMap(null);
+            }
+            markers = [];
+        }
+
+        function findStores(storeType) {
+            if (typeof google === 'undefined') {
+                alert('Maps API not loaded.');
+                return;
+            }
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                const userLoc = { lat: position.coords.latitude, lng: position.coords.longitude };
+                map.setCenter(userLoc);
+                clearMarkers();
+
+                const service = new google.maps.places.PlacesService(map);
+                service.nearbySearch({ location: userLoc, radius: 5000, keyword: storeType }, function(results, status) {
+                    if (status === google.maps.places.PlacesServiceStatus.OK) {
+                    for (let place of results) {
+                        const marker = new google.maps.Marker({
+                        map: map,
+                        position: place.geometry.location,
+                        title: place.name,
+                        animation: google.maps.Animation.DROP,
+                        icon: storeType === 'Amazon' ? 'https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg'
+                            : storeType === 'Daraz' ? 'https://upload.wikimedia.org/wikipedia/commons/7/70/Daraz_logo.svg'
+                            : null
+                        });
+
+                        marker.addListener('click', function() {
+                        infoWindow.setContent(`<div style='font-size:14px; color:black;'><strong>${place.name}</strong><br>${place.vicinity}</div>`);
+                        infoWindow.open(map, marker);
+                        });
+
+                        // Bounce animation on hover
+                        marker.addListener('mouseover', function() {
+                        marker.setAnimation(google.maps.Animation.BOUNCE);
+                        });
+                        marker.addListener('mouseout', function() {
+                        marker.setAnimation(null);
+                        });
+
+                        markers.push(marker);
+                    }
+                    } else {
+                    alert('No nearby ' + storeType + ' found.');
+                    }
+                });
+                }, function(error) {
+                alert('Unable to get your location. Please allow location access.');
+                });
+            } else {
+                alert('Geolocation is not supported by this browser.');
+            }
+        }
+
+        // --- LOAD FEATURED (ON LOAD) ---
+        window.onload = function() {
+            loadTheme();
+            
+            // Initialize Map
+            initMap();
+
+            // Loader
+            setTimeout(() => {
+                document.body.classList.add('loaded');
+                setTimeout(() => {
+                    const loader = document.getElementById('loader-wrapper');
+                    if (loader) loader.style.display = 'none';
+                }, 500); 
+            }, 2000);
+
+            // Populate Home Featured
+            const featContainer = document.getElementById('featured-container');
+            const featuredIds = [1, 2, 3, 4, 5, 6]; 
+            
+            let allRecipes = [];
+            Object.values(recipes).forEach(arr => allRecipes.push(...arr));
+
+            const featuredItems = allRecipes.filter(r => featuredIds.includes(r.id));
+            
+            featuredItems.forEach(item => {
+                let catKey = 'healthy';
+                for (const [key, val] of Object.entries(recipes)) {
+                    if (val.some(r => r.id === item.id)) {
+                        catKey = key;
+                        break;
+                    }
+                }
+
+                featContainer.innerHTML += `
+                    <div class="col-md-4">
+                        <div class="card h-100" onclick="directLoadRecipe(${item.id}, '${catKey}')">
+                            <div style="overflow:hidden; border-radius: 20px 20px 0 0;">
+                                <img src="${item.img}" class="card-img-top" alt="${item.name}">
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title fw-bold">${item.name}</h5>
+                                <p class="card-text text-muted small">${item.desc}</p>
+                                <div class="d-flex justify-content-between align-items-center mt-3">
+                                    <span class="badge bg-warning text-dark rounded-pill"><i class="fas fa-clock"></i> ${item.prep}</span>
+                                    <span class="text-primary small fw-bold">View Recipe <i class="fas fa-arrow-right"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            loadReviews();
+            
+            window.onscroll = function () {
+                const btn = document.getElementById("btn-back-to-top");
+                if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                    btn.style.display = "block";
+                } else {
+                    btn.style.display = "none";
+                }
+            };
+        };
+
+        // --- CATEGORY & RECIPE LOGIC ---
+        function loadCategory(catType) {
+            currentCategory = catType;
+            const container = document.getElementById('cat-items-container');
+            container.innerHTML = ''; 
+            
+            const titles = { 'healthy': 'Healthy Snacks', 'kids': 'Snacks for Kids', 'easy': 'Easy-on-Stomach', 'smoothies': 'Smoothies' };
+            document.getElementById('cat-title').innerText = titles[catType];
+
+            recipes[catType].forEach(item => {
+                container.innerHTML += `
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100" onclick="showRecipeDetail(${item.id})">
+                            <div style="overflow:hidden; border-radius: 20px 20px 0 0;">
+                                <img src="${item.img}" class="card-img-top" alt="${item.name}">
+                            </div>
+                            <div class="card-body">
+                                <h3 class="h5 fw-bold" style="color:white;">${item.name}</h3>
+                                <p class="text-muted " style="color:white;">${item.desc}</p>
+                                <button class="btn btn-sm btn-outline-success rounded-pill mt-2">View Recipe</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            navTo('category-list');
+        }
+
+        function directLoadRecipe(id, defaultCat) {
+            currentCategory = defaultCat;
+            showRecipeDetail(id);
+        }
+
+        function showRecipeDetail(id) {
+            let recipe = null;
+            Object.values(recipes).forEach(arr => {
+                const found = arr.find(r => r.id === id);
+                if(found) recipe = found;
+            });
+
+            if(!recipe) return;
+
+            document.getElementById('detail-img').src = recipe.img;
+            document.getElementById('detail-title').innerText = recipe.name;
+            document.getElementById('detail-desc').innerText = recipe.desc;
+            document.getElementById('detail-prep').innerHTML = `<i class="far fa-clock"></i> ${recipe.prep}`;
+            document.getElementById('detail-serves').innerHTML = `<i class="fas fa-user-friends"></i> ${recipe.serves}`;
+            document.getElementById('detail-cals').innerHTML = `<i class="fas fa-fire"></i> ${recipe.cals}`;
+
+            const ingList = document.getElementById('detail-ingredients');
+            ingList.innerHTML = '';
+            recipe.ingredients.forEach(ing => {
+                ingList.innerHTML += `<li class="list-group-item bg-transparent border-0 ps-0"><i class="fas fa-check-circle text-success me-2"></i>${ing}</li>`;
+            });
+
+            const stepList = document.getElementById('detail-steps');
+            stepList.innerHTML = '';
+            recipe.steps.forEach((step, index) => {
+                stepList.innerHTML += `
+                    <div class="d-flex mb-3">
+                        <div class="me-3">
+                            <span class="badge rounded-circle bg-secondary shadow-sm" style="width:30px; height:30px; display:flex; align-items:center; justify-content:center; color:white; ">${index + 1}</span>
+                        </div>
+                        <div style ="color:white;" >${step}</div>
+                    </div>
+                `;
+            });
+
+            navTo('recipe-detail');
+        }
+
+        function goBackToCategory() {
+            if(currentCategory) {
+                loadCategory(currentCategory);
+            } else {
+                navTo('categories');
+            }
+        }
+
+        // --- REVIEWS LOGIC ---
+        function loadReviews() {
+            const container = document.getElementById('reviews-container');
+            const storedReviews = JSON.parse(localStorage.getItem('quickSnacksReviews')) || [];
+            
+            if(storedReviews.length === 0) {
+                container.innerHTML = '<p class="text-muted">No reviews yet. Be the first!</p>';
+                return;
+            }
+
+            container.innerHTML = storedReviews.map(r => `
+                <div class="card mb-3 border-0 shadow-sm" style="border-radius: 15px;">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h6 class="card-title fw-bold mb-0"><i class="fas fa-user-circle text-muted me-2"></i>${r.name}</h6>
+                            <span class="text-warning">${'⭐'.repeat(r.rating)}</span>
+                        </div>
+                        <p class="card-text text-secondary fst-italic">"${r.comment}"</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function submitReview(e) {
+            e.preventDefault();
+            const name = document.getElementById('reviewerName').value;
+            const rating = document.getElementById('reviewerRating').value;
+            const comment = document.getElementById('reviewerComment').value;
+
+            const newReview = { name, rating, comment, date: new Date().toISOString() };
+            
+            const reviews = JSON.parse(localStorage.getItem('quickSnacksReviews')) || [];
+            reviews.unshift(newReview);
+            
+            localStorage.setItem('quickSnacksReviews', JSON.stringify(reviews));
+            
+            document.getElementById('reviewForm').reset();
+            alert('Thanks for your review!');
+            loadReviews();
+        }
+
+        // --- GEOLOCATION LOGIC (For Contact Page) ---
+        function getLocation() {
+            const status = document.getElementById('geo-status');
+            const mapOutput = document.getElementById('map-output');
+            
+            if (!navigator.geolocation) {
+                status.innerText = "Geolocation is not supported by your browser.";
+            } else {
+                status.innerText = "Locating...";
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const lat = position.coords.latitude;
+                        const long = position.coords.longitude;
+                        status.innerText = `Location found: Lat: ${lat.toFixed(4)}, Long: ${long.toFixed(4)}`;
+                        
+                        mapOutput.innerHTML = `
+                            <a href="https://www.google.com/maps/dir/?api=1&destination=123+Healthy+Avenue,+Foodie+City&origin=${lat},${long}" target="_blank" class="btn btn-success mt-2 rounded-pill">
+                                <i class="fas fa-route"></i> Get Directions from Here
+                            </a>
+                        `;
+                    }, 
+                    () => {
+                        status.innerText = "Unable to retrieve your location. Please check browser permissions.";
+                    }
+                );
+            }
+        }
+    </script>
+</body>
+</html>
